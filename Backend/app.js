@@ -18,7 +18,7 @@ const app = express();
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({
-  origin: ["http://localhost:5173", "https://your-frontend.vercel.app"], // add your deployed frontend URL
+  origin: ["http://localhost:5173",], // add your deployed frontend URL
   credentials: true
 }));
 
@@ -36,7 +36,7 @@ app.use("/api/message", messageRouter);
 
 // 404 Handler
 app.use((req, res) => {
-  res.status(404).send('404 Not Found');
+  res.status(404).send('404 Not 7 Found');
 });
 
 // Connect to DB
