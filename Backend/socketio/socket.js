@@ -7,16 +7,18 @@ let io; // singleton
 
 /**
  * Initialize Socket.io server
- * @param {http.Server} server - Optional, only for local dev
+ * @param {http.Server} server - Optional, only for local dev (commented out for Vercel)
  * @returns io instance
  */
 const initSocket = (server) => {
+  // Local dev code is commented out for Vercel
+  /*
   if (!io && server) {
     io = new Server(server, {
       cors: {
         origin: [
-          "http://localhost:5173",          // local frontend
-          "https://your-frontend.vercel.app" // deployed frontend
+          "http://localhost:5173",
+          "https://your-frontend.vercel.app"
         ],
         credentials: true,
       },
@@ -38,6 +40,7 @@ const initSocket = (server) => {
       });
     });
   }
+  */
   return io;
 };
 
@@ -49,7 +52,7 @@ const initSocket = (server) => {
 const getReceiverSocketId = (receiver) => userSocketMap[receiver];
 
 module.exports = {
-  initSocket,          // call with local http server for dev
+  initSocket,          // Vercel me sirf exported function (local server optional)
   userSocketMap,       // userId -> socketId mapping
   getReceiverSocketId, // helper function
 };

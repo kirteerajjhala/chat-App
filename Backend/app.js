@@ -34,12 +34,12 @@ app.use((req, res) => res.status(404).send("404 Not Found"));
 mongoDb();
 
 // Local development only: server + socket.io
-if (process.env.NODE_ENV !== "production") {
-  const http = require("http").createServer(app);
-  initSocket(http);
-  const PORT = process.env.PORT || 4000;
-  http.listen(PORT, () => console.log("Server running on port", PORT));
-}
+// if (process.env.NODE_ENV !== "production") {
+//   const http = require("http").createServer(app);
+//   initSocket(http);
+//   const PORT = process.env.PORT || 4000;
+//   http.listen(PORT, () => console.log("Server running on port", PORT));
+// }
 
 // Vercel export
 module.exports = app;
