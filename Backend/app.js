@@ -1,10 +1,10 @@
 const  express = require('express');
-const {app ,server} = require("./Backend/socketio/socket")
-const mongoDb = require("./Backend/DataBase/db")
+const {app ,server} = require("./socketio/socket")
+const mongoDb = require("./DataBase/db")
 const cors =require("cors")
 const dotenv = require("dotenv")
-const authRouter = require("./Backend/Routes/auth.Router")
-const userRouter =require("./Backend/Routes/userRoutes")
+const authRouter = require("./Routes/auth.Router")
+const userRouter =require("./Routes/userRoutes")
 
 
 const path = require("path")
@@ -16,7 +16,7 @@ const PORT = process.env.PORT ;
 app.use("/public", express.static(path.join(__dirname, "public")));
 
 const cookieParser = require("cookie-parser");
-const messageRouter = require('./Backend/Routes/messageRoutes');
+const messageRouter = require('./Routes/messageRoutes');
   
 app.use(cookieParser());
 
