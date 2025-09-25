@@ -1,46 +1,46 @@
-const  express = require('express');
-const {app ,server} = require("./socketio/socket")
-const mongoDb = require("./DataBase/db")
-const cors =require("cors")
-const dotenv = require("dotenv")
-const authRouter = require("./Routes/auth.Router")
-const userRouter =require("./Routes/userRoutes")
+// app.js (Vercel-ready)
+const express = require('express');
+const mongoDb = require("./DataBase/db");
+const cors = require("cors");
+const dotenv = require("dotenv");
+const path = require("path");
+const cookieParser = require("cookie-parser");
 
+// Routers
+const authRouter = require("./Routes/auth.Router");
+const userRouter = require("./Routes/userRoutes");
+const messageRouter = require('./Routes/messageRoutes');
 
-const path = require("path")
-app.use(express.json());
 dotenv.config();
-const PORT = process.env.PORT ;
+const app = express();
 
+// Middlewares
+app.use(express.json());
+app.use(cookieParser());
+app.use(cors({
+  origin: ["http://localhost:5173", "https://your-frontend.vercel.app"], // add your deployed frontend URL
+  credentials: true
+}));
 
+// Static files
 app.use("/public", express.static(path.join(__dirname, "public")));
 
-const cookieParser = require("cookie-parser");
-const messageRouter = require('./Routes/messageRoutes');
-  
-app.use(cookieParser());
-
-app.use(cors(
-  {
-    origin : "http://localhost:5173",
-    credentials :true
-  }
-
-))
-
-
+// Routes
 app.get('/', (req, res) => {
   res.send('Hello World!');
 });
 
-app.use("/api/auth" ,authRouter)
-app.use("/api/user" ,userRouter)
-app.use("/api/message" , messageRouter)
+app.use("/api/auth", authRouter);
+app.use("/api/user", userRouter);
+app.use("/api/message", messageRouter);
+
+// 404 Handler
 app.use((req, res) => {
   res.status(404).send('404 Not Found');
 });
 
-server.listen(PORT, () => {
-  console.log('Server is running on port: ', PORT);
-});
-mongoDb ();
+// Connect to DB
+mongoDb(); // Ensure your DB URI is set in Vercel env variables
+
+// Export app (do NOT use app.listen() for Vercel)
+module.exports = app;
