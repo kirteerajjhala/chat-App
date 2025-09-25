@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+    <div style="background-color: brown; resize: both; width: 100%;  overflow: auto;">
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Soluta voluptate incidunt facilis ipsam corrupti, distinctio atque nihil accusantium quaerat, excepturi veniam fuga debitis praesentium mollitia dolor doloremque recusandae. Voluptatum debitis cum nam quasi voluptate dignissimos vero quod nesciunt. Nobis possimus provident in magni error repellendus blanditiis ducimus tempore illo, voluptatum dicta neque ipsam harum saepe similique aliquam quis tenetur expedita exercitationem fugiat quos nemo odit ea. Ab sit veritatis vitae quod, doloremque odio excepturi recusandae a eos perferendis inventore mollitia ratione nam, amet nesciunt. Totam consectetur laboriosam amet reiciendis asperiores.
+    </div>
+    <script>
+ let otpgenrator = (len)=>{
+let otp ="";
+    
+for (let index = 0; index < len; index++) {
+let num =  (Math.floor(Math.random()*10))
+otp = num + otp;
+  
+}
+console.log(otp)
+}
+
+otpgenrator(8)
+    </script>
+</body>
+</html>
