@@ -1,21 +1,23 @@
 // socketio/socket.js
 const { Server } = require("socket.io");
-const express = require("express");
-
-const app = express();
 
 // userId -> socketId mapping
 const userSocketMap = {};
 let io; // singleton
 
-const getReceiverSocketId = (receiver) => userSocketMap[receiver];
-
-// Init Socket.io for local dev (with HTTP server)
+/**
+ * Initialize Socket.io server
+ * @param {http.Server} server - Optional, only for local dev
+ * @returns io instance
+ */
 const initSocket = (server) => {
-  if (!io) {
+  if (!io && server) {
     io = new Server(server, {
       cors: {
-        origin: ["http://localhost:5173", "https://your-frontend.vercel.app"], // add deployed frontend URL
+        origin: [
+          "http://localhost:5173",          // local frontend
+          "https://your-frontend.vercel.app" // deployed frontend
+        ],
         credentials: true,
       },
     });
@@ -24,11 +26,9 @@ const initSocket = (server) => {
       console.log("Socket connected:", socket.id);
 
       const userId = socket.handshake.query.userId;
-      if (userId) {
-        userSocketMap[userId] = socket.id;
-      }
+      if (userId) userSocketMap[userId] = socket.id;
 
-      // Send online users
+      // Emit online users
       io.emit("getOnlineUsers", Object.keys(userSocketMap));
 
       socket.on("disconnect", () => {
@@ -41,5 +41,15 @@ const initSocket = (server) => {
   return io;
 };
 
-// Export for Vercel and local
-module.exports = { app, initSocket, userSocketMap, getReceiverSocketId };
+/**
+ * Helper to get receiver socket id by userId
+ * @param {string} receiver
+ * @returns {string|undefined}
+ */
+const getReceiverSocketId = (receiver) => userSocketMap[receiver];
+
+module.exports = {
+  initSocket,          // call with local http server for dev
+  userSocketMap,       // userId -> socketId mapping
+  getReceiverSocketId, // helper function
+};

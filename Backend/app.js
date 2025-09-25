@@ -1,15 +1,10 @@
-// app.js (Vercel-ready)
-const express = require('express');
+const express = require("express");
+const { initSocket } = require("./socketio/socket");
 const mongoDb = require("./DataBase/db");
 const cors = require("cors");
+const cookieParser = require("cookie-parser");
 const dotenv = require("dotenv");
 const path = require("path");
-const cookieParser = require("cookie-parser");
-
-// Routers
-const authRouter = require("./Routes/auth.Router");
-const userRouter = require("./Routes/userRoutes");
-const messageRouter = require('./Routes/messageRoutes');
 
 dotenv.config();
 const app = express();
@@ -18,29 +13,33 @@ const app = express();
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({
-  origin: ["http://localhost:5173",], // add your deployed frontend URL
+  origin: ["http://localhost:5173", "https://your-frontend.vercel.app"],
   credentials: true
 }));
-
-// Static files
 app.use("/public", express.static(path.join(__dirname, "public")));
 
-// Routes
-app.get('/', (req, res) => {
-  res.send('Hello World!');
-});
+// Routers
+const authRouter = require("./Routes/auth.Router");
+const userRouter = require("./Routes/userRoutes");
+const messageRouter = require("./Routes/messageRoutes");
 
 app.use("/api/auth", authRouter);
 app.use("/api/user", userRouter);
 app.use("/api/message", messageRouter);
 
-// 404 Handler
-app.use((req, res) => {
-  res.status(404).send('404 Not 7 Found');
-});
+app.get("/", (req, res) => res.send("Hello World!"));
+app.use((req, res) => res.status(404).send("404 Not Found"));
 
-// Connect to DB
-mongoDb(); // Ensure your DB URI is set in Vercel env variables
+// DB connect
+mongoDb();
 
-// Export app (do NOT use app.listen() for Vercel)
+// Local development only: server + socket.io
+if (process.env.NODE_ENV !== "production") {
+  const http = require("http").createServer(app);
+  initSocket(http);
+  const PORT = process.env.PORT || 4000;
+  http.listen(PORT, () => console.log("Server running on port", PORT));
+}
+
+// Vercel export
 module.exports = app;
