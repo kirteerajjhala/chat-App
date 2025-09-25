@@ -15,7 +15,7 @@ const useOtherUsers = () => {
           "http://localhost:8000/api/user/others",
           { headers: { Authorization: `Bearer ${token}` } }
         );
-        console.log("result : " , result.data.data)
+      
         dispatch(setOtherUsers(result.data.data));
 
 
