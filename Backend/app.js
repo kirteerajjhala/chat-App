@@ -11,7 +11,6 @@ const messageRouter = require("../Backend/Routes/messageRoutes");
 
 dotenv.config();
 
-// agar .env me PORT nahi mila to default 8000 le lega
 const PORT = process.env.PORT || 8000;
 
 // Middlewares
@@ -19,33 +18,31 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(
   cors({
-    origin: "https://livechatappbykirteeraj.onrender.com", // frontend url
+    origin: "https://livechatappbykirteeraj.onrender.com",
     credentials: true,
   })
 );
 
-// Static files
+// Serve public folder
 app.use("/public", express.static(path.join(__dirname, "public")));
 
-// Test route
-app.get("/", (req, res) => {
-  res.send("Hello World!");
-});
+// Serve React frontend build
+app.use(express.static(path.join(__dirname, "../frontend/dist")));
 
-// Routes
+// API routes
 app.use("/api/auth", authRouter);
 app.use("/api/user", userRouter);
 app.use("/api/message", messageRouter);
 
-// 404 handler
-app.use((req, res) => {
-  res.status(404).send("404 Not Found");
+// Catch-all to serve React for any other route
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "../frontend/dist/index.html"));
 });
 
 // Database connect
 mongoDb();
 
-// Server start with error handling
+// Server start
 server.listen(PORT, () => {
   console.log(`✅ Server running on http://localhost:${PORT}`);
 }).on("error", (err) => {
