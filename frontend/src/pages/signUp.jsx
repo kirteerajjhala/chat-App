@@ -22,7 +22,7 @@ function SignUp() {
     try {
       setLoading(true);
 
-      const response = await axios.post("http://localhost:8000/api/auth/signup", {
+      const response = await axios.post("https://chat-app-2-backend1.onrender.com/api/auth/signup", {
         username: userInfo.username,
         email: userInfo.email,
         password: userInfo.password,

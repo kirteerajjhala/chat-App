@@ -12,7 +12,7 @@ const token = localStorage.getItem("token");
       try {
         // ✅ cookie-based authentication
         const result = await axios.get(
-          "http://localhost:8000/api/user/current",
+          "https://chat-app-2-backend1.onrender.com/api/user/current",
           { headers: { Authorization: `Bearer ${token}` } } // important!
         );
         dispatch(setUserData(result.data));

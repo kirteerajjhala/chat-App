@@ -14,7 +14,7 @@ const GetMessages = () => {
     const fetchMessages = async () => {
       try {
         const result = await axios.get(
-          `http://localhost:8000/api/message/get/${selectedUser._id}`,
+          `https://chat-app-2-backend1.onrender.com/api/message/get/${selectedUser._id}`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }

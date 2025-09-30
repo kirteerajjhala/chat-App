@@ -51,7 +51,7 @@ function MessageArea({ darkMode, sidebarWidth }) {
       if (backendImage) formData.append("image", backendImage);
 
       const result = await axios.post(
-        `http://localhost:8000/api/message/send/${selectedUser._id}`,
+        `https://chat-app-2-backend1.onrender.com/api/message/send/${selectedUser._id}`,
         formData,
         { headers: { Authorization: `Bearer ${token}` } }
       );

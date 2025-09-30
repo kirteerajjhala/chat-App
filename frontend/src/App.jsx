@@ -22,7 +22,7 @@ function App() {
   useEffect(() => {
     if (userData) {
       // ✅ Backend se socket connect
-      const socketio = io("http://localhost:8000", {
+      const socketio = io("https://chat-app-2-backend1.onrender.com", {
         query: { userId: userData?._id },
         transports: ["websocket"], // fallback issues avoid karne ke liye
       });

@@ -29,7 +29,7 @@ function Sidebar({ darkMode, setDarkMode, sidebarWidth, mobile }) {
   const handleLogout = async () => {
     try {
       let token = localStorage.getItem("token");
-      await axios.get("http://localhost:8000/api/auth/logout", {
+      await axios.get("https://chat-app-2-backend1.onrender.com/api/auth/logout", {
         headers: { Authorization: `Bearer ${token}` },
       });
       localStorage.removeItem("token");
@@ -52,7 +52,7 @@ function Sidebar({ darkMode, setDarkMode, sidebarWidth, mobile }) {
         return;
       }
       const result = await axios.get(
-        `http://localhost:8000/api/user/search?query=${input}`,
+        `https://chat-app-2-backend1.onrender.com/api/user/search?query=${input}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       dispatch(setSearchData(result.data));

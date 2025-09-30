@@ -12,7 +12,7 @@ const useOtherUsers = () => {
     const fetchUsers = async () => {
       try {
         const result = await axios.get(
-          "http://localhost:8000/api/user/others",
+          "https://chat-app-2-backend1.onrender.com/api/user/others",
           { headers: { Authorization: `Bearer ${token}` } }
         );
       

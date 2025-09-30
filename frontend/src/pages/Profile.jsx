@@ -37,7 +37,7 @@ function Profile() {
 
     const token = localStorage.getItem("token");
     try {
-      const result = await axios.put("http://localhost:8000/api/user/editProfile", formData, {
+      const result = await axios.put("https://chat-app-2-backend1.onrender.com/api/user/editProfile", formData, {
         headers: { Authorization: `Bearer ${token}` },
       });
       dispatch(setUserData(result.data));
