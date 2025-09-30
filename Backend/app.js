@@ -19,7 +19,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(
   cors({
-    origin: "http://localhost:5173", // frontend url
+    origin: "https://livechatappbykirteeraj.onrender.com", // frontend url
     credentials: true,
   })
 );
