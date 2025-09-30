@@ -1,58 +1,52 @@
-// socketio/socket.js
+const http = require("http");
+const express = require("express");
+const app = express();
+const server = http.createServer(app);
+
 const { Server } = require("socket.io");
+
+const io = new Server(server, {
+  cors: {
+    origin: "http://localhost:5173", // frontend ka URL
+    methods: ["GET", "POST"],
+    credentials: true,
+  },
+});
 
 // userId -> socketId mapping
 const userSocketMap = {};
-let io; // singleton
 
-/**
- * Initialize Socket.io server
- * @param {http.Server} server - Optional, only for local dev (commented out for Vercel)
- * @returns io instance
- */
-const initSocket = (server) => {
-  // Local dev code is commented out for Vercel
-  /*
-  if (!io && server) {
-    io = new Server(server, {
-      cors: {
-        origin: [
-          "http://localhost:5173",
-          "https://your-frontend.vercel.app"
-        ],
-        credentials: true,
-      },
-    });
+// helper function
+const getReceiverSocketId = (receiverId) => {
+  return userSocketMap[receiverId];
+};
 
-    io.on("connection", (socket) => {
-      console.log("Socket connected:", socket.id);
+io.on("connection", (socket) => {
+  console.log("✅ Socket connected:", socket.id);
 
-      const userId = socket.handshake.query.userId;
-      if (userId) userSocketMap[userId] = socket.id;
+  // frontend se query params ke through userId bhejna hoga
+  const userId = socket.handshake.query.userId;
 
-      // Emit online users
-      io.emit("getOnlineUsers", Object.keys(userSocketMap));
-
-      socket.on("disconnect", () => {
-        console.log("Socket disconnected:", socket.id);
-        delete userSocketMap[userId];
-        io.emit("getOnlineUsers", Object.keys(userSocketMap));
-      });
-    });
+  if (userId) {
+    userSocketMap[userId] = socket.id;
+    console.log("🔗 User connected:", userId);
   }
-  */
-  return io;
-};
 
-/**
- * Helper to get receiver socket id by userId
- * @param {string} receiver
- * @returns {string|undefined}
- */
-const getReceiverSocketId = (receiver) => userSocketMap[receiver];
+  // online users list bhej do sabko
+  io.emit("getOnlineUsers", Object.keys(userSocketMap));
 
-module.exports = {
-  initSocket,          // Vercel me sirf exported function (local server optional)
-  userSocketMap,       // userId -> socketId mapping
-  getReceiverSocketId, // helper function
-};
+  // disconnect event
+  socket.on("disconnect", () => {
+    console.log("❌ Socket disconnected:", socket.id);
+
+    if (userId) {
+      delete userSocketMap[userId];
+      console.log("🔗 User removed:", userId);
+    }
+
+    // updated online users bhejna
+    io.emit("getOnlineUsers", Object.keys(userSocketMap));
+  });
+});
+
+module.exports = { app, server, io, userSocketMap, getReceiverSocketId };

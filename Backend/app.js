@@ -1,45 +1,57 @@
 const express = require("express");
-const { initSocket } = require("./socketio/socket");
-const mongoDb = require("./DataBase/db");
+const { app, server } = require("../Backend/socketio/socket");
+const mongoDb = require("../Backend/DataBase/db");
 const cors = require("cors");
-const cookieParser = require("cookie-parser");
 const dotenv = require("dotenv");
+const authRouter = require("../Backend/Routes/auth.Router");
+const userRouter = require("../Backend/Routes/userRoutes");
 const path = require("path");
+const cookieParser = require("cookie-parser");
+const messageRouter = require("../Backend/Routes/messageRoutes");
 
 dotenv.config();
-const app = express();
+
+// agar .env me PORT nahi mila to default 8000 le lega
+const PORT = process.env.PORT || 8000;
 
 // Middlewares
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors({
-  origin: ["http://localhost:5173", "https://your-frontend.vercel.app"],
-  credentials: true
-}));
+app.use(
+  cors({
+    origin: "http://localhost:5173", // frontend url
+    credentials: true,
+  })
+);
+
+// Static files
 app.use("/public", express.static(path.join(__dirname, "public")));
 
-// Routers
-const authRouter = require("./Routes/auth.Router");
-const userRouter = require("./Routes/userRoutes");
-const messageRouter = require("./Routes/messageRoutes");
+// Test route
+app.get("/", (req, res) => {
+  res.send("Hello World!");
+});
 
+// Routes
 app.use("/api/auth", authRouter);
 app.use("/api/user", userRouter);
 app.use("/api/message", messageRouter);
 
-app.get("/", (req, res) => res.send("Hello World!"));
-app.use((req, res) => res.status(404).send("404 Not Found"));
+// 404 handler
+app.use((req, res) => {
+  res.status(404).send("404 Not Found");
+});
 
-// DB connect
+// Database connect
 mongoDb();
 
-// Local development only: server + socket.io
-// if (process.env.NODE_ENV !== "production") {
-//   const http = require("http").createServer(app);
-//   initSocket(http);
-//   const PORT = process.env.PORT || 4000;
-//   http.listen(PORT, () => console.log("Server running on port", PORT));
-// }
-
-// Vercel export
-module.exports = app;
+// Server start with error handling
+server.listen(PORT, () => {
+  console.log(`✅ Server running on http://localhost:${PORT}`);
+}).on("error", (err) => {
+  if (err.code === "EADDRINUSE") {
+    console.error(`❌ Port ${PORT} already in use. Try another port.`);
+  } else {
+    console.error("❌ Server error:", err);
+  }
+});
