@@ -33,18 +33,19 @@ const Profile = async (req, res) => {
     let image;
 
     console.log("req.file:", req.file);
+    console.log("req.body:", req.body);
+    console.log("req.userId:", req.userId);
 
     if (req.file) {
-      image = await uploadOnCludinary(req.file.path);
+      image = await uploadOnCloudinary(req.file.path);
     }
 
     const user = await User.findByIdAndUpdate(
-      req.userId,          // middleware se userId
-      { name, image },
+      req.userId,
+      { name, ...(image && { image }) }, // Agar image hai to update
       { new: true }
     );
 
-    console.log("updated user data  : " , user)
     if (!user) {
       return res.status(404).json({
         success: false,
@@ -54,10 +55,11 @@ const Profile = async (req, res) => {
 
     return res.status(200).json({
       success: true,
-      message: "User name and image uploaded successfully",
+      message: "Profile updated successfully",
       data: user,
     });
   } catch (error) {
+    console.error("Profile error:", error);
     return res.status(500).json({
       success: false,
       message: "Profile error",

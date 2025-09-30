@@ -36,6 +36,8 @@ function Profile() {
     if (backendImage) formData.append("image", backendImage);
 
     const token = localStorage.getItem("token");
+    console.log("token of profile : " , token)
+
     try {
       const result = await axios.put("https://chat-app-2-backend1.onrender.com/api/user/editProfile", formData, {
         headers: { Authorization: `Bearer ${token}` },
